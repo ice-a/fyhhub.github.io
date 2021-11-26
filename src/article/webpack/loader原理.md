@@ -206,5 +206,4 @@ import Styles from 'style-loader!css-loader?modules!./styles.css';
 
 那什么又是`pitch loader`呢，我们先放一放，后面再讲~ 先留个印象。
 从上面可以看出来，`inline loader`是在`normal loader`后面执行的。
-但其实`normal loader`通过一些写法是能改变一些顺序和执行的。
 
