@@ -1,6 +1,9 @@
+
+const path = require('path')
 module.exports = {
   title: 'fyhub’s blog',
   description: '博客',
+  dest: path.resolve(__dirname, '../../dist'),
   base: '/',
   plugins: [
     'mermaidjs',
