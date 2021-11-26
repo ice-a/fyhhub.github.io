@@ -5,8 +5,8 @@
   "repository": "https://e.coding.net/fanyihui/fyhub/fyh-blog.git",
   "author": "fyh-code <17671705929@163.com>",
   "scripts": {
-    "dev": "vuepress dev docs",
-    "build": "vuepress build docs"
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
   },
   "license": "MIT",
   "devDependencies": {
