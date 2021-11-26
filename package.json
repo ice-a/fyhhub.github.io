@@ -1,0 +1,26 @@
+{
+  "name": "fyh-blog",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://e.coding.net/fanyihui/fyhub/fyh-blog.git",
+  "author": "fyh-code <17671705929@163.com>",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^1.8.2",
+    "@vuepress/plugin-last-updated": "^1.8.2",
+    "glob": "^7.1.7",
+    "vuepress": "^1.8.2",
+    "vuepress-plugin-code-switcher": "^1.1.0",
+    "vuepress-plugin-demo-block": "^0.7.2",
+    "vuepress-plugin-mermaidjs": "^1.8.1",
+    "vuepress-plugin-right-anchor": "^0.5.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "vuepress-plugin-element-tabs": "^0.2.8"
+  }
+}
