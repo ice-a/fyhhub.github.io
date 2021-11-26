@@ -2,7 +2,7 @@
   "name": "fyh-blog",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://e.coding.net/fanyihui/fyhub/fyh-blog.git",
+  "repository": "https://github.com/fyhhub/fyhhub.github.io",
   "author": "fyh-code <17671705929@163.com>",
   "scripts": {
     "dev": "vuepress dev src",
