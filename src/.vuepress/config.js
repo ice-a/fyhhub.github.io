@@ -14,8 +14,8 @@ module.exports = {
     'element-tabs'
   ],
   themeConfig: {
-    sidebar: require('./config/sidebar'),
-    nav: require('./config/nav')
+    sidebar: require('./sidebar').sidebar,
+    nav: require('./sidebar').nav
   },
   markdown: {
     lineNumbers: true
