@@ -18,6 +18,7 @@ function generateSideBar(pathline, sideBarConfig, url, item) {
   const hasReadme = mdDirs.some(e => e.includes('README'))
   mdDirs = mdDirs.filter(dir => !dir.startsWith('.'))
 
+  // 如果当前目录没有readme 需要删掉父级path属性
   if (!hasReadme) {
     delete item.path
   }
@@ -52,11 +53,8 @@ function generateSideBar(pathline, sideBarConfig, url, item) {
 }
 generateSideBar(path.resolve(__dirname, '../../src'), sideBarConfigArr, '')
 
-
-sideBarConfigArr = sideBarConfigArr.reduce((config, item) => {
-  config[item.path] = item.children
-  return config
-}, {})
+// 单独处理最顶层分类
+sideBarConfigArr = sideBarConfigArr.reduce((config, item) => (config[item.path] = item.children, config), {})
 
 
 module.exports = {
