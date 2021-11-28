@@ -5,7 +5,7 @@ const generateRoutes = createRoutes('comment')
 module.exports = {
   text: '留言板',
   link: '/comment/',
-  order: 3,
+  order: 4,
   routes: [
   ]
 }
