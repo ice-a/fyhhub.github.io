@@ -4,7 +4,6 @@ const generateRoutes = createRoutes('frontend')
 
 
 // ====================================文章======================================
-const network = generateRoutes('network')
 const rollup = generateRoutes('rollup')
 const webpack = generateRoutes('webpack')
 
@@ -67,11 +66,6 @@ module.exports = {
           children: javascript_interview
         }
       ]
-    },
-    {
-      title: '网络',
-      collapsable: true,
-      children: network
     },
     {
       title: 'rollup',

@@ -12,11 +12,11 @@ module.exports = {
     'code-copy',
     'right-anchor',
     'element-tabs',
+    'flowchart', // https://flowchart.vuepress.ulivz.com/#usage
     [
       '@vssue/vuepress-plugin-vssue',
       {
         platform: 'github',
-        // 其他的 Vssue 配置
         owner: 'fyhhub',
         repo: 'fyhhub.github.io',
         clientId: 'c31038f73d4704fa988c',
