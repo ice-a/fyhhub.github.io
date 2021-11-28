@@ -11,7 +11,18 @@ module.exports = {
     'demo-block',
     'code-copy',
     'right-anchor',
-    'element-tabs'
+    'element-tabs',
+    [
+      '@vssue/vuepress-plugin-vssue',
+      {
+        platform: 'github',
+        // 其他的 Vssue 配置
+        owner: 'fyhhub',
+        repo: 'fyhhub.github.io',
+        clientId: 'c31038f73d4704fa988c',
+        clientSecret: '7d3a4b9d20632c4685b01cdcfaa05c5b0aaa52f5 ',
+      }
+    ]
   ],
   themeConfig: {
     sidebar: require('./sidebar').sidebar,
