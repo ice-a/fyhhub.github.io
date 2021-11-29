@@ -9,7 +9,6 @@ module.exports = {
     'mermaidjs',
     '@vuepress/plugin-last-updated',
     'demo-block',
-    'code-copy',
     'right-anchor',
     'element-tabs',
     'flowchart', // https://flowchart.vuepress.ulivz.com/#usage
