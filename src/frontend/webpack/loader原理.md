@@ -204,6 +204,29 @@ import Styles from 'style-loader!css-loader?modules!./styles.css';
 
 + **nomal loader** 执行顺序：**pre -> normal -> inline -> post**
 
-那什么又是`pitch loader`呢，我们先放一放，后面再讲~ 先留个印象。
 从上面可以看出来，`inline loader`是在`normal loader`后面执行的。
-111
+那什么又是`pitch loader`呢.
+
+
+## pitch loader
+如何写一个pitch loader
+```js
+function loader(source) {
+
+}
+
+loader.pitch = function() {
+  //
+}
+
+module.export = loader
+```
+
+我们知道`loader`是从后往前执行的，而 `pitch loader`刚好反着来，从前往后执行，但是只要`pitch loader`有返回值就不会继续后面loader的执行。流程大致如下
+
+![loader](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1686bed630924ec7868acf4dcaae3db3~tplv-k3u1fbpfcp-watermark.awebp)
+
+
+
+## 参考
+[多图详解，一次性搞懂Webpack Loader](https://juejin.cn/post/6992754161221632030)
