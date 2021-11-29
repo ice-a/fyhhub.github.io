@@ -7,6 +7,7 @@ const nav = [
   { text: '算法', link: '/algorithm/' },
   { text: '计算机基础', link: '/basic/' },
   { text: '随笔', link: '/informal/' },
+  { text: '工具', link: '/tools/' },
   { text: '留言板', link: '/comment/' }
 ]
 
