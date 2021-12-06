@@ -23,7 +23,8 @@ jobs:
           node -v
           npm i
           npm run build
-        node-version: '14'
+        with:
+          node-version: '14'
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
