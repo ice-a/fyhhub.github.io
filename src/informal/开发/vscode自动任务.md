@@ -17,11 +17,11 @@
         "mr",
         "new",
         "-b",
-        "master",
+        "${input:target}",
         "-d",
         "merge",
         "-t",
-        "${input:target}"
+        "${input:message}"
       ],
       "problemMatcher": []
     },
@@ -45,6 +45,17 @@
         "${input:mrid}"
       ],
       "problemMatcher": []
+    },
+    {
+      "label": "git-merge",
+      "type": "shell",
+      "command": "glab",
+      "args": [
+        "mr",
+        "merge",
+        "${input:mrid}"
+      ],
+      "problemMatcher": []
     }
   ],
   "inputs": [
@@ -63,6 +74,11 @@
       "id": "mrid",
       "type": "promptString",
       "description": "请输入merge id"
+    },
+    {
+      "id": "message",
+      "type": "promptString",
+      "description": "请输入merge信息"
     }
   ],
 }
