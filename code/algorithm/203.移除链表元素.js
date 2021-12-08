@@ -18,7 +18,7 @@
  * @return {ListNode}
  */
 var removeElements = function(head, val) {
-  const ret = new ListNode(0, head)
+  let ret = new ListNode(-1, head)
   let cur = ret
   while(cur.next) {
     if (cur.next.val === val) {

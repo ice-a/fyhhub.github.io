@@ -34,6 +34,6 @@ module.exports = {
   head: [
     ['script', { src: 'https://cdn.bootcdn.net/ajax/libs/react/17.0.2/umd/react.production.min.js', defer: true }],
     ['script', { src: 'https://cdn.bootcdn.net/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js', defer: true }],
-    ['script', { src: 'https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js' }]
+    ['script', { src: 'https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js', defer: true }]
   ]
 }
