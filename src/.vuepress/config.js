@@ -21,6 +21,12 @@ module.exports = {
         clientId: 'c31038f73d4704fa988c',
         clientSecret: '7d3a4b9d20632c4685b01cdcfaa05c5b0aaa52f5',
       }
+    ],
+    [
+      '@vuepress/plugin-google-analytics',
+      {
+        'ga': 'G-BWGLYWG03M'
+      }
     ]
   ],
   themeConfig: {
