@@ -10,7 +10,7 @@
  * @return {number}
  */
 var minCostClimbingStairs = function(cost) {
-  const dp = new Array()
+  const dp = []
   dp[0] = cost[0]
   dp[1] = cost[1]
   for (let i = 2;i < cost.length;i++) {
