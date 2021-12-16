@@ -14,10 +14,10 @@ var integerBreak = function(n) {
   dp[2] = 1
   for (let i = 3;i <= n;i++) {
     for (let j = 1;j < i;j++) {
-      dp[i] = Math.max(j * (i - j), dp[i - j] * dp[j], dp[i])
+      dp[i] = Math.max(dp[i - j] * j, (i - j) * j, dp[i])
     }
   }
-  return dp.pop()
+  return dp[n]
 };
 // @lc code=end
 
