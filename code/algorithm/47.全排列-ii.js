@@ -12,23 +12,24 @@
 var permuteUnique = function(nums) {
   const res = []
   nums.sort((a, b) => a - b)
-  function fn(path, used) {
+  const used = {}
+  function fn(path) {
     if (path.length === nums.length) {
       res.push([...path])
       return
     }
     for (let i = 0;i < nums.length;i++) {
-      if (i > 0 && nums[i] === nums[i - 1] && !used[i - 1]) {
-        continue
-      }
-      if (!used[i]) {
-        used[i] = true
-        fn(path.concat(nums[i]), used)
-        used[i] = false
-      }
+      // 树层重复
+      if (i > 0 && nums[i] === nums[i - 1] && !used[i - 1]) continue
+      // 树枝重复
+      if (used[i]) continue
+
+      used[i] = true
+      fn(path.concat(nums[i]))
+      used[i] = false
     }
   }
-  fn([], [])
+  fn([])
   return res
 };
 // @lc code=end

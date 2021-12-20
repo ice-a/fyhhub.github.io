@@ -11,19 +11,20 @@
  */
 var permute = function(nums) {
   const res = []
-  function fn(path, used) {
+  const used = []
+  function fn(path) {
     if (path.length === nums.length) {
       res.push([...path])
-      return;
+      return
     }
     for (let i = 0;i < nums.length;i++) {
       if (used[i]) continue
       used[i] = true
-      fn(path.concat(nums[i]), used)
+      fn(path.concat(nums[i]))
       used[i] = false
     }
   }
-  fn([], [])
+  fn([])
   return res
 };
 // @lc code=end

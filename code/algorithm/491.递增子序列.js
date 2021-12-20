@@ -12,11 +12,10 @@
 var findSubsequences = function(nums) {
   const res = []
   function fn(startIndex, path) {
-    console.log(path);
     path.length >= 2 && res.push([...path])
     const used = {}
     for (let i = startIndex;i < nums.length;i++) {
-      if (path.length > 0 && path[path.length - 1] > nums[i] || used[nums[i]]) continue
+      if ((path.length && nums[i] < path[path.length - 1]) || used[nums[i]]) continue
       used[nums[i]] = true
       fn(i + 1, path.concat(nums[i]))
     }

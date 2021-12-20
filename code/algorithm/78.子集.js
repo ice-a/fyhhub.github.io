@@ -11,14 +11,10 @@
  */
 var subsets = function(nums) {
   const res = []
-  function fn(index, path) {
+  function fn(startIndex, path) {
     res.push([...path])
-    if (index >= nums.length) {
-      return
-    }
-    for (let i = index;i < nums.length;i++) {
-      const next = path.concat(nums[i])
-      fn(i + 1, next)
+    for (let i = startIndex;i < nums.length;i++) {
+      fn(i + 1, path.concat(nums[i]))
     }
   }
   fn(0, [])

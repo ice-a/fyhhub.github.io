@@ -11,18 +11,13 @@
  */
 var subsetsWithDup = function(nums) {
   const res = []
-  let sortNums = nums.sort((a, b) => {
-    return a - b
-  })
+  nums.sort((a, b) => a - b)
   function fn(index, path) {
     res.push([...path])
-    if (index > sortNums.length - 1) {
-      return
-    }
-    for (let i = index;i < sortNums.length;i++) {
+    for (let i = index;i < nums.length;i++) {
       // 如果在一层中，有重复元素，跳过
-      if (i > index && sortNums[i] === sortNums[i - 1]) continue
-      fn(i + 1, path.concat(sortNums[i]))
+      if (i > index && nums[i] === nums[i - 1]) continue
+      fn(i + 1, path.concat(nums[i]))
     }
   }
   fn(0, [])
