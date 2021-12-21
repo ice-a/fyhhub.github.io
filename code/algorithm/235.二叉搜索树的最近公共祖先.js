@@ -28,7 +28,7 @@ var lowestCommonAncestor = function(root, p, q) {
   } else if (root.val < p.val && root.val < q.val) {
     return lowestCommonAncestor(root.right, p, q)
   
-  // 说明有相等的情况 直接返回root
+  // [p, q]区间中则说明该节点就是最近公共祖先了
   } else {
     return root
   }
