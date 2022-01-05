@@ -1,5 +1,5 @@
 function curry(fn, args) {
-  args = args || []
+  args = args || [];
   const length = fn.length
   return function() {
     const allArgs = args.concat([].slice.call(arguments))
