@@ -20,7 +20,7 @@ var canPartition = function(nums) {
 
   // 遍历数组
   for (let i = 0;i < nums.length;i++) {
-    // 倒序遍历背包容量 
+    // 倒序遍历背包容量
     for (let j = target;j >= nums[i];j--) {
       dp[j] = Math.max(dp[j], dp[j - nums[i]] + nums[i])
       // 如果背包里放的最大数和最大容量相同 返回true
