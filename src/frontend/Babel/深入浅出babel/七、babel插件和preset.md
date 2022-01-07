@@ -14,6 +14,9 @@ babel插件有三种注册方式，当使用数组形式时，第二个参数是
 
 ### plugin的写法
 
+:::: tabs
+
+::: tab 第一种
 第一种，可以是一个函数
 
 ```js
@@ -37,6 +40,9 @@ export default function(api, options, dirname) {
   };
 }
 ```
+:::
+
+::: tab 第二种
 
 第二种，可以直接返回一个对象
 
@@ -55,6 +61,40 @@ export default plugin =  {
     }
 };
 ```
+
+:::
+
+::: tab 第三种
+
+第三种，使用`@babel/helper-plugin-utils`中的`declare`注册插件
+
+```js
+const { declare } = require('@babel/helper-plugin-utils')
+module.exports = declare(() => {
+  return {
+    inherits: parentPlugin,
+    manipulateOptions(options, parserOptions) {
+        options.xxx = '';
+    },
+    pre(file) {
+      this.cache = new Map();
+    },
+    visitor: {
+      StringLiteral(path, state) {
+        this.cache.set(path.node.value, 1);
+      }
+    },
+    post(file) {
+      console.log(this.cache);
+    }
+  };
+})
+```
+:::
+
+::::
+
+
 **参数**:
 
 + `api`: 包含了各种 babel 的 api，比如 types、template 等，这些包就不用在插件里单独单独引入了，直接取来用就行。
@@ -93,3 +133,30 @@ export default obj = {
   presets: [['presetsB', { options: 'bbb'}]]
 }
 ```
+
+### 3. 如何注册插件
+
+
+#### @babel/core注册
+
+```js
+babel.transformSync("code();", {
+  plugin: [userPlugin]
+});
+```
+
+#### .babelrc注册
+```json
+{
+  "plugins": [
+    "/user/desktop/plugin.js" // 插件完整路径
+  ]
+}
+```
+
+
+### 4.插件和preset执行顺序
+
+`插件:` **从前到后**
+
+`preset:` **从后往前**
