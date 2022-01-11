@@ -7,7 +7,7 @@ const nav = [
   { text: '算法', link: '/algorithm/' },
   { text: '计算机基础', link: '/basic/' },
   { text: '随笔', link: '/informal/' },
-  { text: '工具', link: '/tools/' },
+  { text: '面经', link: '/interview/' },
   { text: '留言板', link: '/comment/' }
 ]
 
@@ -38,7 +38,6 @@ function generateSideBar(pathline, sideBarConfig, url, item) {
         path: `${url}/${dir}/`.replace(/\/+/g, '/'),
         children: []
       }
-      
       generateSideBar(path.resolve(pathline, dir), item.children, `${url}/${dir}/`.replace(/\/+/g, '/'), item)
       sideBarConfig.push(item)
     // 如果是个文件
