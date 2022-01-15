@@ -1,11 +1,30 @@
-# preset-env配置
+# 十、preset-env配置
 
 ## @babel/preset-env的配置
 
 这个包的配置比较多，首先我们要指定的是 targets，也就是 browserslist 的 query，这个同样可以在 .browserslistrc 的配置文件中指定（别的工具也可能用到）。
 
 ### targets
+[browserslist](https://github.com/browserslist/browserslist#queries)
+
 targets 配啥呢？
+
+#### 查询语法
+
+根据用户份额:
+
++ `> 5%`: 在全球用户份额大于 5% 的浏览器
++ `> 5% in CN`: 在中国用户份额大于 5% 的浏览器
+
+根据最新浏览器版本:
++ `last 2 versions` 所有浏览器的最新两个版本
++ `last 2 Chrome versions` Chrome 浏览器的最新两个版本
+
+不再维护的浏览器
++ `dead` 官方不在维护已过两年，比如 `IE10`
+
+浏览器版本号
++ `Chrome > 90` Chrome 大于 90 版本号的浏览器
 
 可以配 query 或者直接指定环境版本（query 的结果也是环境版本）。
 
@@ -38,6 +57,8 @@ chrome, opera, edge, firefox, safari, ie, ios, android, node, electron
 }
 ```
 
+
+
 ### include & exclude
 通过 targets 的指定，babel 会自动引入一些插件，但当需要手动指定要 include 或者 exclude 什么插件的时候可以使用这个 option。
 
@@ -47,17 +68,19 @@ chrome, opera, edge, firefox, safari, ie, ios, android, node, electron
 
 ### modules
 
-targets 是指定目标环境，modules 是指定目标模块规范，取值有 amd、umd、systemjs、commonjs (cjs)、auto、false。
+targets 是指定目标环境，`modules 是指定目标模块规范`，取值有 amd、umd、systemjs、commonjs (cjs)、auto、false。
 
-+ amd、umd、systemjs、commonjs (cjs) 这四个分别指定不同的目标模块规范
++ `amd、umd、systemjs、commonjs (cjs)` 这四个分别指定不同的目标模块规范
 
-+ false 是不转换模块规范
++ `false` 是不转换模块规范
 
-+ auto 则是自动探测，默认值也是这个。
++ `auto` 则是自动探测，默认值也是这个。
 
 其实一般这个 option 都是 bundler 来设置的，因为 bundler 负责模块转换，自然知道要转换成什么模块规范。我们平时就用默认值 auto 即可。
+但是如果想要开启`tree-shaking`，推荐设置为`false`, 因为 `webpack`只会对import/export语法做`tree-shaking`优化。
 
 类似 babel parser 可以设置 moduleType 为 unambiguous，让 babel 根据是否包含 import / export 语法来自动设置为具体的值。 这个 auto 也是一样，会根据探测到的目标环境支持的模块规范来做转换。依据是在 transform 的时候传入的 caller 数据。
+
 ```js
 babel.transformFileSync("example.js", {
   caller: {
@@ -67,6 +90,27 @@ babel.transformFileSync("example.js", {
 });
 ```
 比如在调用 transformFile 的 api 的时候传入了 caller 是支持 esm 的，那么在 targets 的 modules 就会自动设置为 esm。
+
+
+### useBuiltIns & corejs
+在babel6时如果我们想要使用polyfill,是需要手动引入`babel-polyfill`的，但是现在可以自动引入
+但是不是默认就会启用这个功能，需要配置。
+```js
+{
+  "presets": [["@babel/preset-env", {
+    "targets": "> 0.25%, not dead",
+    "useBuiltIns": "usage",// or "entry" or "false"
+    "corejs": 3
+  }]]
+}
+```
+配置下 corejs 和 useBuiltIns。
+
++ corejs 就是 babel 7 所用的 polyfill，需要指定下版本，corejs 3 才支持实例方法（比如 Array.prototype.fill ）的 polyfill。
+
++ useBuiltIns 就是使用 polyfill （corejs）的方式，是在入口处全部引入（entry），还是每个文件引入用到的（usage），或者不引入（false）。
+
+
 
 
 ### debug

@@ -1,4 +1,4 @@
-# babel内置功能
+# 九、babel内置功能
 babel最开始的名字叫 6to5, 意思是做es6 到 es5的`语法转换`和`api转换`, 在后面的4.0改名为babel。那么babel是如何实现这两种转换呢？
 
 ## babel插件的标准
@@ -53,6 +53,9 @@ javascript
   transform-async-generator-functions
   ```
 + stage 4 - Finished: 会加入到下一年的 es20xx spec
+
+  例如`babel-preset-es2016`
+
 
 还没有加入到标准的语言特性，会被babel实现的，例如`可选链`，安装`@babel/plugin-proposal-optional-chaining`插件。
 

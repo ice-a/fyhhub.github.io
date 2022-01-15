@@ -181,4 +181,67 @@ function resolvePromise(promise2, x, resolve, reject) {
   }
 }
 
+SelfPromise.resolve = function (value) {
+  return new SelfPromise(resolve => {
+    resolve(value);
+  });
+}
+
+SelfPromise.reject = function (reason) {
+  return new SelfPromise((resolve, reject) =>{
+    reject(reason);
+  });
+}
+
+SelfPromise.race = function (promises) {
+  return new SelfPromise((resolve, reject) => {
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(resolve, reject);
+    }
+  });
+}
+
+SelfPromise.all = (promises) => {
+  let arr = [];
+  let count = 0;
+  return new SelfPromise((resolve, reject) => {
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(data => {
+        arr[i] = data;
+        count++;
+        if (count === promises.length) {
+          resolve(arr);
+        }
+      }, reject);
+    }
+  });
+}
+
+SelfPromise.deferred = function () {
+  let dfd = {};
+  dfd.promise = new SelfPromise((resolve, reject) => {
+    dfd.resolve = resolve;
+    dfd.reject = reject;
+  });
+  return dfd;
+}
+
+SelfPromise.allSettled = function(promises) {
+  return new SelfPromise((resolve) => {
+    const data = []
+    for (let i = 0;i < promises.length;i++) {
+      const promise = promises[i]
+      promise.then(res => {
+        data[i] = { status: 'fulfilled', value: res }
+      }, error => {
+        data[i] = { status: 'rejected', reason: error }
+      }).finally(() => {
+        if (i === promises.length - 1) {
+          resolve(data)
+        }
+      })
+    }
+  })
+}
+
 module.exports = SelfPromise;
