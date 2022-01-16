@@ -39,3 +39,7 @@
 
 
 一段时间后。。。异步执行`useEffect的销毁函数和回调`
+
+## useEffect和useLayoutEffect的区别
+
+![image.png](http://tva1.sinaimg.cn/large/006vSZ9Ugy1gyfmj76zumj31110kjwjf.jpg)
