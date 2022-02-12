@@ -213,3 +213,8 @@ transformFromAstSync(
 注意：`transformXxx` 的 api，已经被标记为过时了，后续会删掉，不建议用，直接用 `transformXxxSync 和 transformXxxAsync`。
 
 @babel/core 包还有一个 `createConfigItem` 的 api，用于 plugin 和 preset 的封装。
+
+::: tip
+所有文章均参考或直接拷贝于[Babel 插件通关秘籍](https://juejin.cn/book/6946117847848321055)
+强烈推荐购买阅读
+:::

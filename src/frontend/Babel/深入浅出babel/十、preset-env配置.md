@@ -224,3 +224,7 @@ preset-env 的时候是全局引入的, 当引入 @babel/plugin-transform-runtim
 
 这个问题在 babel8 中得到了解决。
 
+::: tip
+所有文章均参考或直接拷贝于[Babel 插件通关秘籍](https://juejin.cn/book/6946117847848321055)
+强烈推荐购买阅读
+:::

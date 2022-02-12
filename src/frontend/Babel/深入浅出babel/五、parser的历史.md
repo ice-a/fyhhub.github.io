@@ -18,3 +18,8 @@
 eslint 的 parser ---- espree 本来是 fork 自 esprima，但后来 espree 2.0 基于 acorn 重新实现了，也使用 acorn 的插件机制来扩展语法。
 
 babel parser(babylon) 也是基于 acorn，并且对 AST 节点和属性都做了扩展，也提供了一些支持 typescript、jsx、flow 的插件（就是我们可以在 @babel/parser 的 plugins 里面指定的那些）。
+
+::: tip
+所有文章均参考或直接拷贝于[Babel 插件通关秘籍](https://juejin.cn/book/6946117847848321055)
+强烈推荐购买阅读
+:::
