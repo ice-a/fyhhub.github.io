@@ -151,3 +151,8 @@ binding 有多种 kind，代表不同的声明方式。
 `binding.identifier` 和 `binding.path`，分别代表标识符的 AST、整个声明语句的 AST。
 
 声明之后的变量会被引用和修改，`binding.referenced` 代表声明的变量是否被引用，`binding.constant` 代表变量是否被修改过。如果被引用了，就可以通过 `binding.referencePaths` 拿到所有引用的语句的 path。如果被修改了，可以通过 `binding.constViolations` 拿到所有修改的语句的 path。
+
+::: tip
+所有文章均参考或直接拷贝于[Babel 插件通关秘籍](https://juejin.cn/book/6946117847848321055)
+强烈推荐购买阅读
+:::

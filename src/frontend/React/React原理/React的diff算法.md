@@ -45,4 +45,66 @@ Diff算法的整体逻辑会经历两轮遍历：
 
 第二轮遍历：处理剩下的`不属于更新`的节点
 
+### 情况
+:::: tabs
+::: tab 节点更新
+```html
+// 之前
+<ul>
+  <li key="0" className="before">0<li>
+  <li key="1">1<li>
+</ul>
+
+// 之后 情况1 —— 节点属性变化
+<ul>
+  <li key="0" className="after">0<li>
+  <li key="1">1<li>
+</ul>
+
+// 之后 情况2 —— 节点类型更新
+<ul>
+  <div key="0">0</div>
+  <li key="1">1<li>
+</ul>
+```
+:::
+
+::: tab 节点新增或减少
+```html
+// 之前
+<ul>
+  <li key="0">0<li>
+  <li key="1">1<li>
+</ul>
+
+// 之后 情况1 —— 新增节点
+<ul>
+  <li key="0">0<li>
+  <li key="1">1<li>
+  <li key="2">2<li>
+</ul>
+
+// 之后 情况2 —— 删除节点
+<ul>
+  <li key="1">1<li>
+</ul>
+```
+:::
+
+::: tab 节点位置变化
+```html
+<ul>
+  <li key="0">0<li>
+  <li key="1">1<li>
+</ul>
+
+// 之后
+<ul>
+  <li key="1">1<li>
+  <li key="0">0<li>
+</ul>
+```
+:::
+::::
+
 ### 第一轮遍历

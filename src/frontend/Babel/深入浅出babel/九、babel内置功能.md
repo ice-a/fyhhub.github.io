@@ -206,3 +206,8 @@ const get = _.get;
 + helper 是 babel 做语法转换时用到的函数，比如 _typeof、_extends 等
 
 babel 做语法转换和 api 的 polyfill，需要自己实现一部分 runtime 的函数，就是 helper 部分，有的也没有自己实现，用的第三方的，比如 regenerator 是用的 facebook 的。api 的 polyfill 也是用的 core-js 的，babel 对它们做了整合。
+
+::: tip
+所有文章均参考或直接拷贝于[Babel 插件通关秘籍](https://juejin.cn/book/6946117847848321055)
+强烈推荐购买阅读
+:::
