@@ -1,3 +1,13 @@
+/*
+ * @Author: fanyihui
+ * @Date: 2022-02-18 21:19:33
+ * @LastEditors: VSCode
+ * @LastEditTime: 2022-02-18 21:32:41
+ * @FilePath: /fyh-blog/src/.vuepress/config.js
+ * @Description: 
+ * 
+ * Copyright (c) 2022 by fanyihui/tuhu, All Rights Reserved. 
+ */
 
 const path = require('path')
 module.exports = {
@@ -11,6 +21,7 @@ module.exports = {
     'demo-block',
     'right-anchor',
     'element-tabs',
+    'vuepress-plugin-zooming',
     'flowchart', // https://flowchart.vuepress.ulivz.com/#usage
     [
       '@vssue/vuepress-plugin-vssue',

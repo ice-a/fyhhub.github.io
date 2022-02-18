@@ -1,0 +1,178 @@
+<!--
+ * @Author: fanyihui
+ * @Date: 2022-02-18 21:05:44
+ * @LastEditors: VSCode
+ * @LastEditTime: 2022-02-18 22:02:36
+ * @FilePath: /fyh-blog/src/informal/读书笔记/Vue.js设计与实现.md
+ * @Description: 
+ * 
+ * Copyright (c) 2022 by fanyihui/tuhu, All Rights Reserved. 
+-->
+# Vue.js设计与实现
+
+
+## 第2章 框架设计的核心要素
+
+
+### 2.1 提升用户的开发体验
+
+
+#### Vue对warn的处理
+提供友好的报错信息至关重要, 在Vue源码中我们经常看到`warn函数的调用`, 例如下面组件没有template的警告信息
+```js
+warn(
+  `Component ${
+    comp.name ? `${comp.name} ` : ``
+  } is missing template or render function.`
+)
+```
+
+那么vue是如何处理错误，进行警告呢，我们来看下vue源码的实现
+```js
+const stack: VNode[] = []
+
+export function warn(msg: string, ...args: any[]) {
+  const instance = stack.length ? stack[stack.length - 1].component : null
+
+  // 用户传入的警告统一处理函数
+  const appWarnHandler = instance && instance.appContext.config.warnHandler
+  // 获取组件栈
+  const trace = getComponentTrace()
+
+  // 如果用户传入了自定义警告函数
+  if (appWarnHandler) {
+    // 调用 warnHandler 同时处理 warnHandler中可能出现的异常
+    callWithErrorHandling(
+      appWarnHandler,
+      instance,
+      ErrorCodes.APP_WARN_HANDLER,
+      [
+        msg + args.join(''),
+        instance && instance.proxy,
+        trace
+          .map(
+            ({ vnode }) => `at <${formatComponentName(instance, vnode.type)}>`
+          )
+          .join('\n'),
+        trace
+      ]
+    )
+  } else {
+    // 用户没有传入 warnHandler
+    const warnArgs = [`[Vue warn]: ${msg}`, ...args]
+    /* istanbul ignore if */
+    if (
+      trace.length &&
+      // avoid spamming console during tests
+      !__TEST__
+    ) {
+      warnArgs.push(`\n`, ...formatTrace(trace))
+    }
+    // log 警告信息
+    console.warn(...warnArgs)
+  }
+}
+```
+
+#### 更加直观的查看log
+
+正常打印一个ref是长这样
+![image](https://tvax1.sinaimg.cn/large/006vSZ9Ugy1gzhzhifed3j30x804kq47.jpg)
+
+但是我们可以通过一些设置，来直观的查看log数据
+![image](https://tva3.sinaimg.cn/large/006vSZ9Ugy1gzhzfr2ti7j30oc0kkq68.jpg)
+![image](https://tvax4.sinaimg.cn/large/006vSZ9Ugy1gzhzj4jdhyj30hk0223yo.jpg)
+
+
+
+### 2.2 控制框架代码的体积
+可以发现vue源码中，有很多warn都会配合`__DEV__`常量做检查
+```js
+if (__DEV__ && isPromise(data)) {
+  warn(
+    `data() returned a Promise - note data() cannot be async; If you ` +
+      `intend to perform data fetching before component renders, use ` +
+      `async setup() + <Suspense>.`
+  )
+}
+```
+这里的`__DEV__`是通过rollup来预定义全局变量，类似`webpack`的`DefinePlugin`
+当Vue.js在开发环境被使用时，这里`__DEV__`会被直接编译为`true`，如下
+```js
+if (true && isPromise(data)) {
+  warn(
+    `data() returned a Promise - note data() cannot be async; If you ` +
+      `intend to perform data fetching before component renders, use ` +
+      `async setup() + <Suspense>.`
+  )
+}
+```
+
+
+### 2.3 框架要做到良好的`Tree-Shaking`
+首先要实现`tree-shaking`，必须要基于`esm`规范，因为需要静态分析代码，做`dead code`去除。
+
+第二，tree-shaking的关键是-----副作用, 什么是副作用呢
+可以参考我的另一篇文章 [tree-shaking](/frontend/webpack/tree-shaking原理.html#什么是tree-shaking)
+
+不过我们还是举个简单的例子
+
+```js
+function foo(obj) {
+  obj && obj.foo
+}
+foo()
+```
+上面的代码经过rollup编译后，并不会被去除，为什么呢？假如`obj`是一个`Proxy`对象，它有一个get函数，如果在get函数中产生了副作用，那这个函数也是有副作用的。
+
+所以如果我们想指定这里函数调用，不会产生副作用，我们可以这么做
+```js
+function foo(obj) {
+  obj && obj.foo
+}
+/*#__PURE__*/ foo()
+```
+加上上面的注释后，该代码就会被tree-shaking， 并且一般来讲`/*#__PURE__*/`都是用在顶层调用的。
+
+
+
+我们可以看到在Vue源码中也有很多这样的代码
+![image](https://tva1.sinaimg.cn/large/006vSZ9Ugy1gzi032242xj30ic02y3zz.jpg)
+
+
+### 2.4 框架应该输出怎样的构建产物
+细心的朋友会发现，vue源码打包出来后的静态文件，类型非常多，那么它们又分别对应什么环境呢？
+![image](https://tvax3.sinaimg.cn/large/006vSZ9Ugy1gzi05x28dsj30dy07ddgk.jpg)
+
+|产物|描述|
+|---|---|
+|vue.cjs.js|遵循commonjs规范，开发环境使用|
+|vue.cjs.prod.js|遵循commonjs规范，生产环境使用|
+|vue.esm-browser.js|遵循esm规范， 用于script标签type="module"，开发环境使用|
+|vue.esm-browser.prod.js|遵循esm规范，用于script标签type="module"，生产环境使用|
+|vue.esm-bundler|遵循esm规范，开发环境使用|
+|vue.global.js|iife 立即执行函数，开发环境使用|
+|vue.runtime.esm-browser.js|遵循esm规范， 用于script标签type="module"，开发环境使用，只包含运行时|
+|vue.runtime.esm-browser.prod.js|遵循esm规范， 用于script标签type="module"，生产环境使用，只包含运行时|
+|vue.esm-bundler.js|遵循esm规范，开发环境使用，只包含运行时|
+|vue.runtime.global.js|iife 立即执行函数，开发环境使用，只包含运行时|
+|vue.runtime.global.prod.js|iife 立即执行函数，生产环境使用，只包含运行时|
+
+
+那么Vue是如何区分不同的开发环境，引入不同的包呢, 我们不难发现，在vue的`index.js`中，有如下代码
+```js
+if (process.env.NODE_ENV === 'production') {
+  module.exports = require('./dist/vue.cjs.prod.js')
+} else {
+  module.exports = require('./dist/vue.cjs.js')
+}
+```
+
+另外，如何区分不同的模块规范？其实一般都是通过`package.json`中的`main`和`module`来指定的
+```js
+{
+  "main": "index.js",
+  "module": "dist/vue.runtime.esm-bundler.js" // 优先使用module
+}
+```
+
