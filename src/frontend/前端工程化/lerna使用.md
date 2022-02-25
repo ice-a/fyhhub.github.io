@@ -1,3 +1,13 @@
+<!--
+ * @Author: fanyihui
+ * @Date: 2021-11-29 08:52:18
+ * @LastEditors: VSCode
+ * @LastEditTime: 2022-02-25 14:54:04
+ * @FilePath: /fyh-blog/src/frontend/前端工程化/lerna使用.md
+ * @Description: 
+ * 
+ * Copyright (c) 2022 by fanyihui/tuhu, All Rights Reserved. 
+-->
 # lerna使用
 
 ## lerna核心操作
@@ -43,4 +53,12 @@
     "@leek-cli-dev/utils": "file:../utils"  // 通过file: 可以让我们不需要npm link 直接可以本地开发
   }
 }
+```
+
+
+**公共包提升**
+```json
+"bootstrap": {
+  "hoist": true
+},
 ```
