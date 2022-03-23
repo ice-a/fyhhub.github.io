@@ -78,3 +78,59 @@ type MyAwaited<T> = T extends Promise<infer U>
   : never
 ```
 
+### 7. IF
+```ts
+type A = If<true, 'a', 'b'>  // expected to be 'a'
+type B = If<false, 'a', 'b'> // expected to be 'b'
+```
+```ts
+type If<C, T, F> = C extends true ? T : F;
+```
+
+### 8. Concat
+```ts
+type Result = Concat<[1], [2]> // expected to be [1, 2]
+```
+
+```ts
+type Concat<T extends any[], U extends any[]> = [...T, ...U]
+```
+
+### 9. Includes
+```ts
+type isPillarMen = Includes<['Kars', 'Esidisi', 'Wamuu', 'Santana'], 'Dio'> // expected to be `false`
+```
+
+```ts
+type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends (<T>() => T extends Y ? 1 : 2) ? true : false
+
+// 先取出一个类型K，然后用类型K和U比较，如果不相同就递归Includes，继续取P的第一个类型比较
+type Includes<T extends readonly any[], U> = T extends [infer K, ...infer P]
+  ? Equal<K, U> extends true
+    ? true
+    : Includes<P, U>
+  : false
+```
+
+### 10. push
+```ts
+type Result = Push<[1, 2], '3'> // [1, 2, '3']
+```
+
+```ts
+type Push<T extends readonly any[], U> = [...T, U]
+```
+
+### 11. Unshift
+```typescript
+type Result = Unshift<[1, 2], 0> // [0, 1, 2,]
+```
+
+```ts
+type Unshift<T extends readonly any[], U> = [U, ...T]
+```
+
+### 12. Parameters
+```ts
+type MyParameters<T extends (...args: any[]) => any> = T extends (...args: infer K) => any ? K : never;
+```
