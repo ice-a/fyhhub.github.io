@@ -134,3 +134,79 @@ type Unshift<T extends readonly any[], U> = [U, ...T]
 ```ts
 type MyParameters<T extends (...args: any[]) => any> = T extends (...args: infer K) => any ? K : never;
 ```
+
+
+## 困难
+
+### 1. 获取函数返回类型
+```ts
+type MyReturnType<T extends (...args: any[]) => unknown> = T extends (...args: any[]) => infer ReturnType ? ReturnType : never;
+```
+
+
+### 2. 实现 Omit
+```ts
+type MyOmit<T, K extends keyof T> =  {
+  [Key in keyof T as Key extends K ? never : Key]: T[Key];
+}
+```
+
+### 3. Readonly(升级版)
+```ts
+interface Todo {
+  title: string
+  description: string
+  completed: boolean
+}
+
+const todo: MyReadonly2<Todo, 'title' | 'description'> = {
+  title: "Hey",
+  description: "foobar",
+  completed: false,
+}
+
+todo.title = "Hello" // Error: cannot reassign a readonly property
+todo.description = "barFoo" // Error: cannot reassign a readonly property
+todo.completed = true // OK
+```
+
+```ts
+type MyReadonly2<T, K extends keyof T = keyof T> = {
+  readonly [Key in keyof T as Key extends K ? Key : never]: T[Key]
+} & {
+  [Key in keyof T as Key extends K ? never : Key]: T[Key]
+}
+```
+
+### 4. 深度 Readonly
+```ts
+type X = { 
+  x: { 
+    a: 1
+    b: 'hi'
+  }
+  y: 'hey'
+}
+
+type Expected = { 
+  readonly x: { 
+    readonly a: 1
+    readonly b: 'hi'
+  }
+  readonly y: 'hey' 
+}
+
+type Todo = DeepReadonly<X> // should be same as `Expected`
+```
+
+```ts
+type BaseType = string | number | undefined | boolean | null | Function
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends BaseType ? T[P] : DeepReadonly<T[P]>;
+}
+```
+
+### 5. 元组转合集
+```ts
+type TupleToUnion<T extends readonly any[]> = T[number]
+```
