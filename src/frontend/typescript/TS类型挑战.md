@@ -210,3 +210,75 @@ type DeepReadonly<T> = {
 ```ts
 type TupleToUnion<T extends readonly any[]> = T[number]
 ```
+
+### 6. 可串联构造器
+```ts
+declare const config: Chainable
+
+const result = config
+  .option('foo', 123)
+  .option('name', 'type-challenges')
+  .option('bar', { value: 'Hello World' })
+  .get()
+
+// 期望 result 的类型是：
+interface Result {
+  foo: number
+  name: string
+  bar: {
+    value: string
+  }
+}
+```
+
+```ts
+type Chainable<S = {}> = {
+	option<K extends string, V>(key: K, value: V): Chainable<S & { [P in K]: V }>;
+	get(): S;
+};
+```
+
+### 7. 最后一个元素
+```ts
+type arr1 = ['a', 'b', 'c']
+type arr2 = [3, 2, 1]
+
+type tail1 = Last<arr1> // expected to be 'c'
+type tail2 = Last<arr2> // expected to be 1
+```
+
+```ts
+type Last<T extends any[]> = T extends [...unknown[], infer Res] ? Res : never
+```
+
+### 8. 出堆
+```ts
+type arr1 = ['a', 'b', 'c', 'd']
+type arr2 = [3, 2, 1]
+
+type re1 = Pop<arr1> // expected to be ['a', 'b', 'c']
+type re2 = Pop<arr2> // expected to be [3, 2]
+```
+
+```ts
+type Pop<T extends any[]> = T extends [...infer R, infer L] ? R : never
+```
+
+### 9. Promise.all
+```ts
+const promise1 = Promise.resolve(3);
+const promise2 = 42;
+const promise3 = new Promise<string>((resolve, reject) => {
+  setTimeout(resolve, 100, 'foo');
+});
+
+// expected to be `Promise<[number, 42, string]>`
+const p = Promise.all([promise1, promise2, promise3] as const)
+```
+
+```ts
+declare function PromiseAll<T extends readonly any[]>(values: readonly [...T]): Promise<{
+  [Key in keyof T]: T[Key] extends Promise<infer P> ? P : T[Key]
+}>
+```
+
