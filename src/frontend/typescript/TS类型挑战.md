@@ -282,3 +282,40 @@ declare function PromiseAll<T extends readonly any[]>(values: readonly [...T]): 
 }>
 ```
 
+
+### 10. Type Lookup
+```ts
+interface Cat {
+  type: 'cat'
+  breeds: 'Abyssinian' | 'Shorthair' | 'Curl' | 'Bengal'
+}
+
+interface Dog {
+  type: 'dog'
+  breeds: 'Hound' | 'Brittany' | 'Bulldog' | 'Boxer'
+  color: 'brown' | 'white' | 'black'
+}
+
+type MyDog = LookUp<Cat | Dog, 'dog'> // expected to be `Dog`
+```
+
+```ts
+type LookUp<U, T> = U extends { type: infer Type } ? Type extends T ? U : never : never
+```
+
+### 11. Trim Left
+```ts
+type Spec = ' ' | '\n' | '\t'
+type TrimLeft<S extends string> = S extends `${Spec}${infer Right}` ? TrimLeft<Right> : S
+```
+
+### 12. Trim
+```ts
+type Spec = ' ' | '\n' | '\t'
+
+type Trim<S extends string> = S extends `${Spec}${infer F}`
+  ? Trim<F>
+  : S extends `${infer K}${Spec}`
+  ? Trim<K>
+  : S
+```
