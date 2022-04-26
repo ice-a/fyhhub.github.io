@@ -16,14 +16,17 @@ var uniquePathsWithObstacles = function(obstacleGrid) {
   for (let i = 0;i < m;i++) {
     dp[i] = new Array(n).fill(0)
   }
+  // 第一行遇到障碍物就停止
   for (let i = 0;i < m && obstacleGrid[i][0] === 0;i++) {
     dp[i][0] = 1
   }
+  // 第一列遇到障碍物就停止
   for (let i = 0;i < n && obstacleGrid[0][i] === 0;i++) {
     dp[0][i] = 1
   }
   for (let i = 1;i < m;i++) {
     for (let j = 1;j < n;j++) {
+      // 遇到障碍物跳过
       if (obstacleGrid[i][j] === 1) continue
       dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
     }
