@@ -33,6 +33,7 @@ methodsToPatch.forEach(function (method) {
       ob.observeArray(inserted)
     }
     ob.dep.notify()
+    return result
   }
 })
 
