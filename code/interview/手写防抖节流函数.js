@@ -21,9 +21,9 @@
 // }
 
 function throttle(fn, wait) {
-  let pre = 0;
+  let pre = Date.now()
   return function() {
-    const now = Date.now()
+    let now = Date.now()
     if (now - pre > wait) {
       fn.apply(this, arguments)
       pre = now
@@ -32,12 +32,11 @@ function throttle(fn, wait) {
 }
 
 function debounce(fn, wait) {
-  let timer = null;
+  let timer = null
   return function() {
     if (timer) clearTimeout(timer)
-    const args = arguments
-    setTimeout(() => {
-      fn.apply(this, args)
+    timer = setTimeout(() => {
+      fn.apply(this, arguments)
     }, wait)
   }
 }

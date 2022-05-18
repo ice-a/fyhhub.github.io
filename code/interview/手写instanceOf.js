@@ -10,3 +10,4 @@ function instanceOf(source, target) {
   }
   return false
 }
+
