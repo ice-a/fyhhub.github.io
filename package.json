@@ -6,7 +6,8 @@
   "author": "fyh-code <17671705929@163.com>",
   "scripts": {
     "dev": "vuepress dev src",
-    "build": "vuepress build src"
+    "build": "vuepress build src",
+    "start": "npm run dev"
   },
   "license": "MIT",
   "devDependencies": {

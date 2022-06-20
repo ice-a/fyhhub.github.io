@@ -10,7 +10,7 @@ function debounce(fn, wait) {
 }
 
 function throttle(fn, wait) {
-  let pre = 0
+  let pre = Date.now()
   return function() {
     const now = Date.now()
     if (now - pre > wait) {

@@ -1,13 +1,3 @@
-<!--
- * @Author: fanyihui
- * @Date: 2021-11-29 08:52:18
- * @LastEditors: VSCode
- * @LastEditTime: 2022-02-25 14:54:04
- * @FilePath: /fyh-blog/src/frontend/前端工程化/lerna使用.md
- * @Description: 
- * 
- * Copyright (c) 2022 by fanyihui/tuhu, All Rights Reserved. 
--->
 # lerna使用
 
 ## lerna核心操作
