@@ -1,6 +1,13 @@
 # 深入浅出Vite阅读笔记
 
-## Vite的优势
+## 声明
+
+::: tip
+
+本文基于 [深入浅出Vite](https://juejin.cn/book/7050063811973218341) 做了关键点总结。
+:::
+
+## 1. Vite的优势
 
 1. 模块化方面：不需要考虑各种模块规范，都统一转成ESM
 2. 模块编译方面：webpack冷启动需要递归打包依赖树，vite基于浏览器esm，能做到按需加载和编译。
@@ -12,9 +19,7 @@
 
 **一个import对应一个请求**
 
-
-
-## 为什么Vite打包前要执行tsc
+## 2. 为什么Vite打包前要执行tsc
 
 **这里的作用主要是用来做类型检查**
 
@@ -30,7 +35,9 @@
 ```
 
 
-## 配置预处理器
+## 3. Vite配置
+
+### 3.1 配置预处理器
 
 ```js
 pnpm i sass -D
@@ -59,7 +66,10 @@ export default defineConfig({
   }
 ```
 
-## 配置CSS Module
+
+
+### 3.2 CSS配置
+#### 3.2.1 配置CSS Module
 ```js
 // vite.config.ts
 export default {
@@ -78,7 +88,7 @@ export default {
 ```
 
 
-## 配置postcss
+#### 3.2.2 配置postcss
 ```js
 pnpm i autoprefixer -D
 ```
@@ -103,9 +113,9 @@ export default {
 ```
 
 
-## CSS 原子化框架
+#### 3.2.3 CSS 原子化框架
 
-### 1. Windi CSS 接入
+#### 3.2.4 Windi CSS 接入
 
 ```
 pnpm i windicss vite-plugin-windicss -D
@@ -129,7 +139,7 @@ import "virtual:windi.css";
 ```
 
 
-### 2. Tailwind CSS
+#### 3.2.5 Tailwind CSS
 
 ```js
 pnpm install -D tailwindcss postcss autoprefixer
@@ -164,4 +174,390 @@ module.exports = {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+```
+
+
+### 3.3 静态资源配置
+
+```js
+// vite.config.ts
+import path from 'path';
+
+{
+  resolve: {
+    // 别名配置
+    alias: {
+      '@assets': path.join(__dirname, 'src/assets')
+    }
+  }
+}
+```
+
+#### 3.3.1 SVG 组件方式加载
+
++ Vue2 项目中可以使用 vite-plugin-vue2-svg插件。
++ Vue3 项目中可以引入 vite-svg-loader。
++ React 项目使用 vite-plugin-svgr插件。
+```js
+pnpm i vite-plugin-svgr -D
+```
+
+```js
+// vite.config.ts
+import svgr from 'vite-plugin-svgr';
+
+{
+  plugins: [
+    // 其它插件省略
+    svgr()
+  ]
+}
+```
+随后注意要在 tsconfig.json 添加如下配置，否则会有类型错误:
+
+```json
+{
+  "compilerOptions": {
+    // 省略其它配置
+    "types": ["vite-plugin-svgr/client"]
+  }
+}
+```
+
+#### 3.3.2 静态资源公共域名配置
+```json
+// .env 文件
+VITE_IMG_BASE_URL=https://my-image-cdn.com
+```
+
+```js
+// src/vite-env.d.ts
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_APP_TITLE: string;
+  // 自定义的环境变量
+  readonly VITE_IMG_BASE_URL: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+```
+
+```html
+<img src={new URL('./logo.png', import.meta.env.VITE_IMG_BASE_URL).href} />
+```
+
+
+#### 3.3.3 图片压缩
+
+```js
+pnpm i vite-plugin-imagemin -D
+```
+
+```js
+//vite.config.ts
+import viteImagemin from 'vite-plugin-imagemin';
+
+{
+  plugins: [
+    // 忽略前面的插件
+    viteImagemin({
+      // 无损压缩配置，无损压缩下图片质量不会变差
+      optipng: {
+        optimizationLevel: 7
+      },
+      // 有损压缩配置，有损压缩下图片质量可能会变差
+      pngquant: {
+        quality: [0.8, 0.9],
+      },
+      // svg 优化
+      svgo: {
+        plugins: [
+          {
+            name: 'removeViewBox'
+          },
+          {
+            name: 'removeEmptyAttrs',
+            active: false
+          }
+        ]
+      }
+    })
+  ]
+}
+```
+
+
+#### 3.3.4 雪碧图优化
+在实际的项目中我们还会经常用到各种各样的 svg 图标，虽然 svg 文件一般体积不大，但 Vite 中对于 svg 文件会始终打包成单文件，大量的图标引入之后会导致网络请求增加，大量的 HTTP 请求会导致网络解析耗时变长，页面加载性能直接受到影响。这个问题怎么解决呢？
+
+
+Vite 中提供了import.meta.glob的语法糖来解决这种批量导入的问题，如上述的 import 语句可以写成下面这样:
+```js
+const icons = import.meta.glob('../../assets/icons/logo-*.svg');
+```
+
+在这里我们只需要同步加载即可，可以使用 import.meta.globEager来完成:
+
+```js
+const icons = import.meta.globEager('../../assets/icons/logo-*.svg');
+```
+
+合并图标的方案也叫雪碧图，我们可以通过vite-plugin-svg-icons来实现这个方案，首先安装一下这个插件:
+
+```js
+pnpm i vite-plugin-svg-icons -D
+```
+
+```js
+// vite.config.ts
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+
+{
+  plugins: [
+    // 省略其它插件
+    createSvgIconsPlugin({
+      iconDirs: [path.join(__dirname, 'src/assets/icons')]
+    })
+  ]
+}
+```
+
+
+## 4. Vite预构建
+
+### 4.1 配置include的场景
+
+```js
+// vite.config.ts
+optimizeDeps: {
+  // 配置为一个字符串数组，将 `lodash-es` 和 `vue`两个包强制进行预构建
+  include: ["lodash-es", "vue"];
+}
+```
+
+#### 4.1.1 场景一: 动态 import
+
+在某些动态 import 的场景下，由于 Vite 天然按需加载的特性，经常会导致某些依赖只能在运行时被识别出来。导致`二次预构建`
+
+```js
+// src/locales/zh_CN.js
+import objectAssign from "object-assign";
+console.log(objectAssign);
+
+// main.tsx
+const importModule = (m) => import(`./locales/${m}.ts`);
+importModule("zh_CN");
+```
+
+二次预构建的成本也比较大。我们不仅需要把预构建的流程重新运行一遍，还得重新刷新页面，并且需要重新请求所有的模块。
+
+可以通过include参数提前声明需要按需加载的依赖:
+
+```js
+// vite.config.ts
+{
+  optimizeDeps: {
+    include: [
+      // 按需加载的依赖都可以声明到这个数组里
+      "object-assign",
+    ];
+  }
+}
+```
+
+#### 4.1.2 场景二: 某些包被手动 exclude
+
+在预构建中排除某个包的情况，需要注意它所依赖的包是否具有 ESM 格式
+
+```js
+// vite.config.ts
+{
+  optimizeDeps: {
+    exclude: ["@loadable/component"];
+  }
+}
+```
+可以看到浏览器控制台会出现如下的报错:
+
+![1](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e72fecff62ec477686aeb539ee66aa4e~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp?)
+
+这是为什么呢? 我们刚刚手动 exclude 的包@loadable/component本身具有 ESM 格式的产物，但它的某个依赖hoist-non-react-statics的产物并没有提供 ESM 格式，导致运行时加载失败。
+
+强制对`hoist-non-react-statics`这个间接依赖进行预构建:
+
+```js
+// vite.config.ts
+{
+  optimizeDeps: {
+    include: [
+      // 间接依赖的声明语法，通过`>`分开, 如`a > b`表示 a 中依赖的 b
+      "@loadable/component > hoist-non-react-statics",
+    ];
+  }
+}
+```
+
+### 4.2 第三方包出现问题
+
+#### 4.2.1 patch-package
+
+```js
+pnpm i @milahu/patch-package -D
+```
+
+::: tip
+注意: 要改动的包在 package.json 中必须声明确定的版本，不能有~或者^的前缀。
+:::
+
+接着，我们进入第三方库的代码中进行修改，先删掉无用的 import 语句，再在命令行输入
+
+```js
+npx patch-package react-virtualized
+```
+
+现在根目录会多出patches目录记录第三方包内容的更改，随后我们在package.json的scripts中增加如下内容：
+
+```js
+{
+  "scripts": {
+    // 省略其它 script
+    "postinstall": "patch-package"
+  }
+}
+```
+
+#### 4.2.2 Esbuild 插件
+
+```js
+// vite.config.ts
+const esbuildPatchPlugin = {
+  name: "react-virtualized-patch",
+  setup(build) {
+    build.onLoad(
+      {
+        filter:
+          /react-virtualized\/dist\/es\/WindowScroller\/utils\/onScroll.js$/,
+      },
+      async (args) => {
+        const text = await fs.promises.readFile(args.path, "utf8");
+
+        return {
+          contents: text.replace(
+            'import { bpfrpt_proptype_WindowScroller } from "../WindowScroller.js";',
+            ""
+          ),
+        };
+      }
+    );
+  },
+};
+
+// 插件加入 Vite 预构建配置
+{
+  optimizeDeps: {
+    esbuildOptions: {
+      plugins: [esbuildPatchPlugin];
+    }
+  }
+}
+```
+
+
+## 5. ESBuild 和 rollup
+
+
+### 5.1 esbuild
+Esbuild 作为打包工具也有一些缺点:
++ 不支持`降级到 ES5` 的代码。这意味着在低端浏览器代码会跑不起来
++ 不支持 `const enum` 等语法。这意味着单独使用这些语法在 esbuild 中会直接抛错。
++ 不提供操作打包产物的接口，像 Rollup 中灵活`处理打包产物`的能力(如renderChunk钩子)在 Esbuild 当中完全没有。
++ 不支持自定义 `Code Splitting` 策略。传统的 Webpack 和 Rollup 都提供了自定义拆包策略的 API，而 Esbuild 并未提供，从而降级了拆包优化的灵活性。
++ Esbuild 并没有实现 TS 的类型系统，在编译 TS(或者 TSX) 文件时仅仅抹掉了类型相关的代码，暂时没有能力实现类型检查
+
+Esbuild `转译 TS 或者 JSX` 的能力通过 Vite 插件提供, Vite 已经将 Esbuild 的 Transformer 能力用到了`生产环境`。
+
+
+### 5.2 rollup
+
+
+#### 5.2.1 生产环境 Bundle
+
+```html
+<head>
+  <!-- 省略其它内容 -->
+  <!-- 入口 chunk -->
+  <script type="module" crossorigin src="/assets/index.250e0340.js"></script>
+  <!--  自动预加载入口 chunk 所依赖的 chunk-->
+  <link rel="modulepreload" href="/assets/vendor.293dca09.js">
+</head>
+```
+
+一般情况下，Rollup 打包之后，会先请求 A，然后浏览器在加载 A 的过程中才决定请求和加载 C，但 Vite 进行优化之后，请求 A 的同时会自动预加载 C，通过优化 Rollup 产物依赖加载方式节省了不必要的网络开销。
+
+#### 5.2.2 兼容插件机制
+无论是开发阶段还是生产环境，Vite 都根植于 Rollup 的插件机制和生态
+
+
+## 6. 插件开发
+
+
+### 6.1 虚拟模块
+我们来尝试一下如何通过虚拟模块来读取内存中的变量
+```js
+import { Plugin, ResolvedConfig } from 'vite';
+
+const virtualEnvModuleId = 'virtual:env';
+const resolvedEnvVirtualModuleId = '\0' + virtualEnvModuleId;
+
+export default function virtualFibModulePlugin(): Plugin {
+  let config: ResolvedConfig | null = null;
+  return {
+    name: 'vite-plugin-virtual-fib-module',
+    configResolved(c: ResolvedConfig) {
+      config = c;
+    },
+    resolveId(id) {
+      if (id === virtualEnvModuleId) {
+        return resolvedEnvVirtualModuleId;
+      }
+    },
+    load(id) {
+      if (id === resolvedEnvVirtualModuleId) {
+        return `export default ${JSON.stringify(config!.env)}`;
+      }
+    }
+  }
+}
+```
+
+```js
+// main.tsx
+import env from 'virtual:env';
+console.log(env)
+```
+
+```js
+// types/shim.d.ts
+declare module 'virtual:*' {
+  export default any;
+}
+```
+
+### 6.2 调试技巧
+另外，在开发调试插件的过程，我推荐大家在本地装上vite-plugin-inspect插件，并在 Vite 中使用它:
+
+```js
+// vite.config.ts
+import inspect from 'vite-plugin-inspect';
+
+// 返回的配置
+{
+  plugins: [
+    // 省略其它插件
+    inspect()
+  ]
+}
 ```
