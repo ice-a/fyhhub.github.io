@@ -1,4 +1,4 @@
-# Babel工具链原理（一）babel-parser
+# Babel工具链原理（一）@babel/parser
 
 ## 前言
 
