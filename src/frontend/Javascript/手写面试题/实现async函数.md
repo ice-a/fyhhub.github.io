@@ -1,3 +1,7 @@
+# 实现async函数
+
+
+```js
 function asyncToGenerator(fn) {
   return function() {
     const gen = fn.apply(this, arguments)
@@ -25,3 +29,4 @@ function asyncToGenerator(fn) {
     })
   }
 }
+```

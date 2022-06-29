@@ -1,25 +1,35 @@
-# Babel工具链原理（一）@babel/parser
+# 带你玩转babel工具链（一）@babel/parser
 
-## 前言
+## 一、前言
 
 `@babel/parser`作为babel最核心的库，是我们学习babel最重要的一部分，对于后面插件的学习都很有帮助。本文将通过各种示例，帮大家理解babel-laoder在babel工具链中的作用。
 
-## 使用
+## 二、基础示例
 首先我们先学习下如何使用`@babel/parser`
 
 下面是一个简单用法
 ```js
-require("@babel/parser").parse("code", {
-  sourceType: "module",
-  plugins: [
-    // enable jsx and flow syntax
-    "jsx",
-    "flow",
-  ],
+require("@babel/parser").parse("let a = 1", {
+  sourceType: "module"
 });
 ```
 
-## 选项配置
+上面的代码执行后，就会返回ast节点，我们可以通过[AST explorer](https://astexplorer.net/)这个站点查看AST
+
+![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f93d3e5d828e454ebf2ed7203bba429d~tplv-k3u1fbpfcp-watermark.image?)
+
+## 三、选项配置
+```js
+require("@babel/parser").parse("let a = 1", {
+  sourceType: "module"
+});
+```
+
+那parser除了上面的`sourceType`还有哪些参数呢？
+
+下面我列出了所有的参数说明。方便大家理解
+
+
 
 |选项|说明|简介|
 |---|---|---|
@@ -46,18 +56,19 @@ require("@babel/parser").parse("code", {
 
 
 
-## babel是如何支持不同语法的？
+## 四、babel是如何按需支持不同语法的？
 
-首先我们有如下代码, 我们写了一段`typescript语法`, 并用parser编译
+> @babel/parser内部实现了所有可配置的语法，例如typescript、top-level-await，本文只讨论如何配置并支持各种语法
+
+
+首先我们有如下代码, 我们写了一段`typescript代码`, 并用parser编译
 
 ```js
 const parser = require('@babel/parser')
 
 const ast = parser.parse(`
   const a: number = 1
-`, {
-  plugins: []
-})
+`, {})
 f
 console.log(ast);
 ```
@@ -68,13 +79,13 @@ console.log(ast);
 
 然后我们再加一个配置
 
-```js
+```diff
 const parser = require('@babel/parser')
 
 const ast = parser.parse(`
   const a: number = 1
 `, {
-  plugins: ['typescript']
++  plugins: ['typescript']
 })
 
 console.log(ast);
@@ -92,7 +103,7 @@ console.log(ast);
 ![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/20c21fb73df644cf91b32cbc909a439d~tplv-k3u1fbpfcp-watermark.image?)
 
 
-我们打开`plugin-syntax-top-level-await`，看下源码实现
+我们简单看一下`plugin-syntax-top-level-await` 的实现：
 
 
 ![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1f8d5ced6f6f464690b7bbe123e3a5f5~tplv-k3u1fbpfcp-watermark.image?)
@@ -113,11 +124,11 @@ console.log(ast);
 
 ![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ab3bde681d5941bdb59dba63ebb95124~tplv-k3u1fbpfcp-watermark.image?)
 
-源码一样非常简单，还贴心的帮我们支持了jsx和flow~
+源码一样非常简单，同时删除了flow和jsx语法支持
+
 
 
 ## 总结
-
 
 
 + `@babel/parser`基于acron做了进一步扩展，实现了很多语法
