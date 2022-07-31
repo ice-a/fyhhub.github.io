@@ -90,3 +90,8 @@
 + **noErrorTruncation**
 
   ts类型异常如果太多太长，可能会被隐藏，配置此选项后能全部展示。
+
+
++ **composite**
+
+  如果配置了true, 默认`rootDir`为`tsconfig.json`那一层目录, 并且默认开启`declaretion`
